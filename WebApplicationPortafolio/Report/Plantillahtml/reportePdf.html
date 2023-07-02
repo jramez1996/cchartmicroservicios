@@ -1,0 +1,11 @@
+﻿<html>
+<body>
+    <h1>Listado de personas:</h1>
+    <ul>
+        @foreach (var persona in Model)
+        {
+        <li>@persona.Nombre - @persona.Edad años</li>
+        }
+    </ul>
+</body>
+</html>
