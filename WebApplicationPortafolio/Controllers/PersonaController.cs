@@ -5,17 +5,20 @@ using System.Web.Http;
 using WebApplicationPortafolio.BusinessLogicLayer;
 using System.Collections.Generic;
 using WebApplicationPortafolio.Models;
-using OfficeOpenXml;
-using System.Data;
 using System.IO;
 using System.Net.Http.Headers;
-
 using PersonaReport=WebApplicationPortafolio.Report.Persona.PersonaReport;
+using System;
+using WebApplicationPortafolio.restConsumer;
+using System.Threading.Tasks;
 
 namespace WebApplicationPortafolio.Controllers
 {
     public class PersonaController : ApiController
     {
+        private ApiClient _apiClient;
+  
+
         private PersonBusinessLogic personBusinessLogic;
 
         private readonly PersonaReport prsonaReport;
@@ -23,8 +26,11 @@ namespace WebApplicationPortafolio.Controllers
         {
             this.personBusinessLogic = new PersonBusinessLogic();
             this.prsonaReport = new PersonaReport();
+            _apiClient = new ApiClient();
 
         }
+
+        [System.Web.Http.HttpGet]
         [Route("api/listado")]
         public HttpResponseMessage Get()
         {
@@ -36,8 +42,22 @@ namespace WebApplicationPortafolio.Controllers
             return response;
        
         }
+        //PersonaController
+        public async Task<IHttpActionResult> GetDataPersona()
+        {
+            try
+            {
+                List<Person> data = await _apiClient.GetApiDataAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
 
-        
+
+
         [System.Web.Http.HttpPost]
         [Route("api/persona/registrar")]
         public IHttpActionResult RegistrarPersona(Person persona)
@@ -52,48 +72,7 @@ namespace WebApplicationPortafolio.Controllers
             return Ok();
         }/**/
       
-        public MemoryStream ExportToExcel(DataTable data)
-        {
-            using (ExcelPackage package = new ExcelPackage())
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Datos");
-
-                // Escribir encabezados
-                for (int i = 0; i < data.Columns.Count; i++)
-                {
-                    worksheet.Cells[1, i + 1].Value = data.Columns[i].ColumnName;
-                }
-
-                // Escribir datos
-                for (int i = 0; i < data.Rows.Count; i++)
-                {
-                    for (int j = 0; j < data.Columns.Count; j++)
-                    {
-                        worksheet.Cells[i + 2, j + 1].Value = data.Rows[i][j];
-                    }
-                }
-
-                // Convertir el paquete Excel a un MemoryStream
-                MemoryStream stream = new MemoryStream(package.GetAsByteArray());
-
-                return stream;
-            }
-        }
-
-        /*  */
-        private DataTable GetData()
-        {
-            // Obtener los datos de tu fuente de datos (base de datos, servicios, etc.)
-            // Aquí se utiliza un ejemplo con datos estáticos para ilustrar el proceso de exportación
-            DataTable data = new DataTable();
-            data.Columns.Add("Nombre");
-            data.Columns.Add("Apellido");
-            data.Rows.Add("John", "Doe");
-            data.Rows.Add("Jane", "Smith");
-
-            return data;
-        }
-
+   
       
         [System.Web.Http.HttpPut]
         [Route("api/persona/actualizar")]
@@ -125,8 +104,8 @@ namespace WebApplicationPortafolio.Controllers
             return response;
         }
         /**/
-        [System.Web.Http.HttpPost]
-        [Route("api/personaExportarPdf")]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/personaExportarPdf")]
         public HttpResponseMessage generatePdfPersona()
         {
   

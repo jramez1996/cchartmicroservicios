@@ -27,9 +27,9 @@ namespace WebApplicationPortafolio.DataAccessLayer
                         while (reader.Read())
                         {
                             Person person = new Person();
-                            person.Id = (int)reader["id"];
-                            person.Nombre = (string)reader["nombre"];
-                            person.Edad = (int)reader["edad"];
+                            person.id = (int)reader["id"];
+                            person.nombre = (string)reader["nombre"];
+                            person.edad = (int)reader["edad"];
 
                             persons.Add(person);
                         }
@@ -47,8 +47,8 @@ namespace WebApplicationPortafolio.DataAccessLayer
                 string query = "INSERT INTO persona (nombre, edad) VALUES (@nombre, @edad)";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@nombre", persona.Nombre);
-                    command.Parameters.AddWithValue("@edad", persona.Edad);
+                    command.Parameters.AddWithValue("@nombre", persona.nombre);
+                    command.Parameters.AddWithValue("@edad", persona.edad);
                     command.ExecuteNonQuery();
                 }
             }
@@ -61,9 +61,9 @@ namespace WebApplicationPortafolio.DataAccessLayer
                 string query = "UPDATE Persona SET Nombre = @Nombre, Edad = @Edad WHERE Id = @Id";
 
                 SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Nombre", persona.Nombre);
-                command.Parameters.AddWithValue("@Edad", persona.Edad);
-                command.Parameters.AddWithValue("@Id", persona.Id);
+                command.Parameters.AddWithValue("@Nombre", persona.nombre);
+                command.Parameters.AddWithValue("@Edad", persona.edad);
+                command.Parameters.AddWithValue("@Id", persona.id);
                 command.ExecuteNonQuery();
             }
         }

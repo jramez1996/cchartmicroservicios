@@ -1,42 +1,33 @@
-﻿using Newtonsoft.Json;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 
+using System.Net;
+using System.Threading.Tasks;
+using System.Web.Http;
+using WebApplicationPortafolio.restConsumer;
 namespace WebApplicationPortafolio.Controllers
 {
     public class ValuesController : ApiController
     {
-  
-        public HttpResponseMessage Get()
+
+        private ApiClient _apiClient;
+        public ValuesController()
         {
-            var values = new string[] { "value1", "value2" };
-            var response = Request.CreateResponse(HttpStatusCode.OK, values);
-            response.Content = new StringContent(JsonConvert.SerializeObject(values), System.Text.Encoding.UTF8, "application/json");
-            return response;
-        }
-        // GET api/values/5
-        public string Get(int id)
-        {
-            return "value";
+            _apiClient = new ApiClient();
         }
 
-        // POST api/values
-        public void Post([FromBody] string value)
+        public async Task<IHttpActionResult> GetDataValues()
         {
-        }
-
-        // PUT api/values/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
-        }
+            try
+            {
+                bool data = await _apiClient.CheckPropertyExistsAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, ex.Message);
+            }
+    }
+    
     }
 }

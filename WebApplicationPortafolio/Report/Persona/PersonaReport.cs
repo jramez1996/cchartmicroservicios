@@ -81,7 +81,7 @@ namespace WebApplicationPortafolio.Report.Persona
            
             foreach (var person in dataList)
             {
-                data.Rows.Add(person.Id.ToString(), person.Nombre);
+                data.Rows.Add(person.id.ToString(), person.nombre);
                 data.Rows.Add("Jane", "Smith");
             }
             //data.Rows.Add("John", "Doe");
